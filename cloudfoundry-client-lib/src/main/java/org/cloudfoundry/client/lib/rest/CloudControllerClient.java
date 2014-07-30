@@ -222,4 +222,14 @@ public interface CloudControllerClient {
     void deleteQuota(String quotaName);
     
     void setQuotaToOrg(String orgName, String quotaName);
+
+    //Organization operations
+    void createOrganization(CloudOrganization organization);
+    
+    void deleteOrganization(String orgName);
+    
+    //Space operations
+    void createSpace(CloudSpace space);
+    
+    void deleteSpace(String spaceName);
 }

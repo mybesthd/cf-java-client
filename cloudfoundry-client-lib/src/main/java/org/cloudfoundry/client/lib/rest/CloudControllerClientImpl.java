@@ -1920,4 +1920,55 @@ public class CloudControllerClientImpl implements CloudControllerClient {
 		}
 
 	}
+
+	public void createOrganization(CloudOrganization organization) {
+		String setPath = "/v2/organizations";
+        HashMap<String, Object> setRequest = new HashMap<String, Object>();
+        setRequest.put("name", organization.getName());
+        getRestTemplate().postForObject(getUrl(setPath), setRequest, String.class);
+	}
+
+	public void deleteOrganization(String orgName) {
+		CloudOrganization organization = getOrgByName(orgName, true);
+		String setPath = "/v2/organizations/{orgGuid}";
+        Map<String, Object> setVars = new HashMap<String, Object>();
+        setVars.put("orgGuid", organization.getMeta().getGuid());
+        getRestTemplate().delete(getUrl(setPath), setVars);
+	}
+
+	public void createSpace(CloudSpace space) {
+		String setPath = "/v2/spaces";
+        HashMap<String, Object> setRequest = new HashMap<String, Object>();
+        setRequest.put("name", space.getName());
+        setRequest.put("organization_guid", space.getOrganization().getMeta().getGuid());
+        getRestTemplate().postForObject(getUrl(setPath), setRequest, String.class);
+	}
+
+	public void deleteSpace(String spaceName) {
+		CloudSpace space = getSpaceByName(spaceName, true);
+		String setPath = "/v2/spaces/{spaceGuid}";
+		Map<String, Object> setVars = new HashMap<String, Object>();
+        setVars.put("spaceGuid", space.getMeta().getGuid());
+        getRestTemplate().delete(getUrl(setPath), setVars);
+	}
+	
+    public CloudSpace getSpaceByName(String spaceName, boolean required){
+        Map<String, Object> urlVars = new HashMap<String, Object>();
+        String urlPath = "/v2/spaces?inline-relations-depth=1&q=name:{name}";
+        urlVars.put("name", spaceName);
+        CloudSpace space = null;
+        List<Map<String, Object>> resourceList = getAllResources(urlPath,
+                urlVars);
+        if (resourceList.size() > 0) {
+            Map<String, Object> resource = resourceList.get(0);
+            space = resourceMapper.mapResource(resource, CloudSpace.class);
+        }
+        
+        if (space == null && required) {
+            throw new IllegalArgumentException("Organization '" + space
+                    + "' not found.");
+        }        
+    	
+	    return space;
+    }
 }

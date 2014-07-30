@@ -515,4 +515,19 @@ public class CloudFoundryClient implements CloudFoundryOperations {
 
 	}
 
+    public void createOrganization(CloudOrganization organization) {
+    	cc.createOrganization(organization);
+    }
+    
+    public void deleteOrganization(String orgName) {
+    	cc.deleteOrganization(orgName);
+    }
+    
+    public void createSpace(CloudSpace space) {
+    	cc.createSpace(space);
+    }
+    
+    public void deleteSpace(String spaceName) {
+    	cc.deleteSpace(spaceName);
+    }
 }
